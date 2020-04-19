@@ -16,21 +16,25 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 if [ $# == 0 ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
-  echo "Usage: ~/gitguru.sh [OPTION]... [BranchName]..."
+  echo "Usage:"
+  echo "  ~/gitguru.sh {-u|-l}"
+  echo "  ~/gitguru.sh [-b] <BranchName>..."
+  echo "  ~/gitguru.sh <BranchName>..."
   echo "Merge multiple branches into the current checkout branch and checkout "
   echo "as a new branch with the concatenates branch name."
   echo "Enter multiple branch names separate by space."
   echo "  -b, --base-branch         Checkout the first branch as a base branch"
-  echo "                              and prefix branch name with 'merge-'"
+  echo "                              and prefix branch name with 'merge__'"
   echo "  -u, --up                  Update all merged branchs"
+  echo "  -l, --log                 Display pretty git log graph"
   echo "  -h, --help                Display this help and exit"
   echo ""
-  echo "Example 1: $ ~/gitit.sh -b testing IN-1234 IN-3242"
-  echo "           This will merge testing, IN-1234 and IN-3242 together "
-  echo "           as a new branch name call merge__testing__IN-1234__IN-3242"
-  echo "Example 2: $ ~/gitit.sh IN-1234 IN-3242 IN-4567"
+  echo "Example 1: $ ~/gitguru.sh -b testing IN-1234 IN-3242"
+  echo "           This will merge testing, IN-1234 and IN-3242 together"
+  echo "           as a new branch name call merge__testing__IN-1234__IN-3242 ."
+  echo "Example 2: $ ~/gitguru.sh IN-1234 IN-3242 IN-4567"
   echo "           This will merge IN-1234, IN-3242 and IN-4567 into the current branch "
-  echo "           as a new branch name call [CurrentBranchName]__IN-1234__IN-3242__IN-4567"
+  echo "           as a new branch name call [CurrentBranchName]__IN-1234__IN-3242__IN-4567 ."
   exit
 fi
 
@@ -132,6 +136,12 @@ remove_created_branches() {
 }
 
 # Execution Begin #
+
+# Display pretty git log graph 
+if [ "$1" == "-l" ] || [ "$1" == "--log" ]; then
+  git log --graph --pretty=format:'%C(yellow)%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset' --abbrev-commit
+  exit
+fi
 
 # Fetch origin bracnhes first.
 git fetch
